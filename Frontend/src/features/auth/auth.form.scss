@@ -70,9 +70,9 @@ main {
             }
 
             &:focus {
-                border-color: #764ba2;
+                border-color: #0d3ec3;
                 background: #222222;
-                box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+                box-shadow: 0 0 0 3px rgba(75, 84, 162, 0.2);
             }
         }
     }
@@ -87,4 +87,16 @@ main {
             text-decoration: underline;
         }
     }
+
+    .auth-footer {
+    color: #d4d4d8;
+
+    a {
+        color: #3b82f6;
+
+        &:hover {
+            color: #60a5fa;
+        }
+    }
+}
 }
