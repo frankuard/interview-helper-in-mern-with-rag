@@ -1,5 +1,5 @@
 const express = require('express')
-const { registerUserController } = require('../controllers/auth.controller')
+const { registerUserController, loginUserController } = require('../controllers/auth.controller')
 
 
 const authRouter = express.Router()
@@ -10,5 +10,12 @@ const authRouter = express.Router()
  * @access Public
  */
 authRouter.post("/register", registerUserController)
+
+/**
+ * @routes POST /api/auth/login
+ * @description Login existing user
+ * @access Public
+ */
+authRouter.post('/login', loginUserController)
 
 module.exports = authRouter
