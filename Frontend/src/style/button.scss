@@ -1,32 +1,29 @@
-@use "./variables" as *;
-
 .button {
-      width: 100%;
-      padding: 13px 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 600;
-      transition: background 0.2s ease,
-                  transform 0.2s ease;
+    border: none;
+    outline: none;
 
-      &.primary-button {
-        background: $primary-color;
-        color: #ffffff;
+    padding: 0.9rem 1.5rem;
+    border-radius: 0.75rem;
 
-        &:hover {
-          background: $primary-hover;
-          transform: translateY(-2px);
-        }
+    font-size: 1rem;
+    font-weight: 700;
 
-        &:active {
-          transform: translateY(0);
-        }
+    cursor: pointer;
+    transition: all 0.25s ease;
 
-        &:focus-visible {
-          outline: 3px solid rgba(99, 102, 241, 0.35);
-          outline-offset: 3px;
-        }
-      }
+    &.primary-button {
+    background: #003da5;
+    color: white;
+
+    &:hover {
+        background: #032385;
+        box-shadow: 0 5px 18px rgba(11, 67, 172, 0.3);
+        transform: translateY(-2px);
     }
+
+    }
+
+    &:active {
+        transform: scale(0.97);
+    }
+}
