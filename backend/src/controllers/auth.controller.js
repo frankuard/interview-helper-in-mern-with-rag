@@ -61,7 +61,6 @@ async function registerUserController(req, res) {
  * @description login a user, expects username, email and password
  * @access Public
  */
-
 async function loginUserController(req, res) {
     const { email, password } = req.body
 
@@ -73,7 +72,7 @@ async function loginUserController(req, res) {
         })
     }
 
-    const isPasswordValid = bcrypt.compare(password, user.password)
+    const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if (!isPasswordValid) {
         return res.status(400).json({
