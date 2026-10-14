@@ -1,15 +1,28 @@
 import { useNavigate, Link } from "react-router";
 import "../auth.form.scss"
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 
 const Register = () => {
 
-    const handleSubmit = (e) => {
-    e.preventDefault();
-}
     const navigate = useNavigate()
+    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
-    
+    const {loading,handleRegister} = useAuth()
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    await handleRegister({username,email,password})
+    navigate("/")
+}
+
+if(loading){
+  return (<main><h1>Loading...</h1></main>)
+}
+
   return (
     <main>
       <div className="form-container">
@@ -19,17 +32,23 @@ const Register = () => {
 
              <div className="input-group">
             <label htmlFor="username">Username</label>
-            <input type="text" name="username" id="username" placeholder="Enter a Username" />
+            <input 
+            onChange={(e) => {setUsername(e.target.value)}}
+            type="text" name="username" id="username" placeholder="Enter a Username" />
           </div>
           
           <div className="input-group">
             <label htmlFor="email">Email</label>
-            <input type="email" name="email" id="email" placeholder="Enter your Email Address" />
+            <input 
+            onChange={(e) => {setEmail(e.target.value)}}
+            type="email" name="email" id="email" placeholder="Enter your Email Address" />
           </div>
 
           <div className="input-group">
             <label htmlFor="password">Password</label>
-            <input type="password" name="password" id="password" placeholder="Enter your Password" />
+            <input 
+            onChange={(e) => {setPassword(e.target.value)}}
+            type="password" name="password" id="password" placeholder="Enter your Password" />
           </div>
 
           <button className="button primary-button">Register</button>
