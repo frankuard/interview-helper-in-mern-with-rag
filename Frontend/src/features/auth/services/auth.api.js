@@ -49,13 +49,13 @@ export async function logout() {
 }
 
 
+
 export async function getMe() {
+
     try {
         
-        const res = await api.get("/api/auth/get-me")
-
+        const res = await api.get("/api/auth/get-me");
         return res.data
-
 
     } catch (err) {
         console.log(err)

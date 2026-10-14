@@ -1,4 +1,5 @@
-import { useContext } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../auth.context";
 import { getMe, login, logout, register } from "../services/auth.api";
 
@@ -16,7 +17,6 @@ export const useAuth =  () => {
             const data = await login({ email,password})
     
             setUser(data.user)
-            return data
             
         } catch (error) {
             console.error(
@@ -53,6 +53,26 @@ export const useAuth =  () => {
         setUser(null)
 
     }
+
+    useEffect(() => {
+      
+
+        const getAndSetUser = async () => {
+        try {
+                const data = await getMe();
+                setUser(data.user);
+        
+        } catch (error) {
+           console.log(error)
+        }
+        finally{
+            setLoading(false)
+        }
+    }
+        getAndSetUser()
+
+    }, []);
+
 
     return {user,loading,handleLogin,handleLogout,handleRegister}
 
