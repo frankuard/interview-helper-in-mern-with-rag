@@ -1,5 +1,10 @@
 import { useState } from "react"
 import "../style/Interview.scss"
+import { useInterview } from "../hooks/useInterview"
+import { useNavigate, useParams } from "react-router"
+import { useEffect } from "react"
+
+
 
 const NAV_ITEMS = [
   { id: "technical", label: "Technical Questions" },
@@ -7,38 +12,6 @@ const NAV_ITEMS = [
   { id: "roadmap", label: "Road Map" },
 ]
 
-// ── Dummy data ───────────────────────────────────────────────────────────────
-const report = {
-  matchScore: 78,
-  technicalQuestions: [
-    {
-      question: "What is the event loop in Node.js?",
-      intention: "Checks your understanding of async behavior.",
-      answer: "The event loop lets Node.js handle many operations without blocking by offloading work and running callbacks when it finishes.",
-    },
-    {
-      question: "How would you use Redis for caching?",
-      intention: "Tests practical caching knowledge.",
-      answer: "Store frequently read data with a TTL, check the cache first, and fall back to the database on a miss.",
-    },
-  ],
-  behavioralQuestions: [
-    {
-      question: "Tell me about a time you handled a tight deadline.",
-      intention: "Looks at how you prioritize and communicate.",
-      answer: "Use the STAR format: describe the situation, your task, the actions you took, and the result.",
-    },
-  ],
-  preparationPlan: [
-    { day: 1, focus: "Node.js fundamentals", tasks: ["Revise the event loop", "Practice async/await questions"] },
-    { day: 2, focus: "Caching and queues", tasks: ["Learn Redis basics", "Read about message queues"] },
-  ],
-  skillGaps: [
-    { skill: "Redis", severity: "high" },
-    { skill: "Message queue", severity: "medium" },
-    { skill: "Event loop", severity: "low" },
-  ],
-}
 
 // ── Sub-components ───────────────────────────────────────────────────────────
 const QuestionCard = ({ item, index }) => {
@@ -85,7 +58,23 @@ const RoadMapDay = ({ day }) => (
 // ── Main component ───────────────────────────────────────────────────────────
 const Interview = () => {
   const [activeNav, setActiveNav] = useState("technical")
+  const {report, getReportById, loading} = useInterview()
+  const {interviewId} = useParams()
 
+  useEffect(() => {
+    if (interviewId){
+        getReportById(interviewId)
+    }
+  }, [interviewId])
+
+  if (loading || !report) {
+    return (
+        <main className="loading-screen">
+            <h1>Loading your interview plan...</h1>
+        </main>
+    )
+  }
+  
   return (
     <main className="interview">
       <div className="interview-layout">

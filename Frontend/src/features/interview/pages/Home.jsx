@@ -21,6 +21,14 @@ const Home = () => {
         navigate(`/interview/${data._id}`)  
     }
 
+    if(loading) {
+        return (
+            <main className="loading-screen">
+                <h1>Loading your interview plan</h1>
+            </main>
+        )
+    }
+
   return (
     <main className="home">
          <h1 className="home-title">
@@ -45,7 +53,7 @@ const Home = () => {
                 name="selfDescription" id="selfDescription" placeholder="Describe yourself in a sentence"></textarea>
             </div>
             <button
-            
+            onClick={handleGenerateReport}
             className="generate-btn ">Generate Interview Report</button>
         </div>
         </div>

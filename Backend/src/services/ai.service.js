@@ -1,10 +1,10 @@
-const {GoogleGenAI} = require('@google/genai');
+const Groq = require("groq-sdk")
 const {z} = require("zod")
 const { zodToJsonSchema } = require("zod-to-json-schema")
 
 
-const ai = new GoogleGenAI({
-    apiKey: process.env.GOOGLE_GENAI_API_KEY
+const groq = new Groq({
+    apiKey: process.env.GROQ_API_KEY
 })
 
 const interviewReportSchema = z.object({
@@ -37,27 +37,64 @@ const interviewReportSchema = z.object({
 })
 
 
+async function generateWithGroq(prompt) {
+    const jsonSchema = zodToJsonSchema(interviewReportSchema)
+
+    const completion = await groq.chat.completions.create({
+        model: "openai/gpt-oss-120b",
+        messages: [
+            {
+    role: "system",
+    content: `You are an interview coach.
+Return a complete interview report as valid JSON.
+You MUST include all these fields:
+matchScore, technicalQuestions, behavioralQuestions, skillGaps, preparationPlan, title.
+
+technicalQuestions and behavioralQuestions must each be arrays of objects containing:
+question, intention, answer.
+
+skillGaps must be an array of objects containing:
+skill, severity (low, medium, or high).
+
+preparationPlan must be an array of objects containing:
+day, focus, tasks (an array of strings).
+
+title must be a string.
+matchScore must be an integer between 0 and 100.
+Follow the JSON schema provided in the user message exactly.
+Do not return unrelated fields such as candidate, strengths, areasForImprovement, or recommendation.
+Return JSON only, without Markdown.`
+},
+            {
+                role: "user",
+                content: `${prompt}
+
+Respond with ONLY a valid JSON object that follows this JSON schema exactly:
+${JSON.stringify(jsonSchema)}
+
+matchScore must be an integer from 0 to 100.`
+            }
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.4
+    })
+
+    const content = completion.choices[0].message.content
+
+    return JSON.parse(content)
+}
+
+
 async function generateInterviewReport({resume,selfDescription,jobDescription}) {
-    
+
     const prompt = `Generate an interview report for a candidate with the following details:
                     Resume: ${resume}
                     Self Description: ${selfDescription}
                     Job Description: ${jobDescription}`
 
-    const res = await ai.models.generateContent({
-        model:"gemini-3-flash-preview",
-        contents:prompt,
-        config:{
-            responseMimeType: "application/json",
-            responseSchema:zodToJsonSchema(interviewReportSchema)
-            
-        }
-
-    })
-
-    console.log(JSON.parse(res.text))
-
-
+    const parsed = await generateWithGroq(prompt)
+    return interviewReportSchema.parse(parsed)
 }
 
-module.exports = {generateInterviewReport}
+
+module.exports = { generateInterviewReport }

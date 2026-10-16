@@ -8,7 +8,7 @@ const { generateInterviewReport } = require("../services/ai.service")
 async function generateInterviewReportController(req,res) {
     const resumeFile = req.file
 
-    const resumeContent = pdfParse(new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
+    const resumeContent = await pdfParse(req.file.buffer)
     const {selfDescription, jobDescription} = req.body
 
     const interviewReportByAI = await generateInterviewReport({
@@ -55,7 +55,7 @@ async function getInterviewByIdController(req,res) {
  * @description Controller to get all interview reports of logged in user.
  */
 async function getAllInterviewReportsController(req,res) {
-    const interviewReports = await interviewReportModel.find({user: req.user.id}).sort({createdAt: -1}).select('-resume -selfDescription -jobDescription -_v -technicalQuestions -behavioralQuestions -skillGaps -preparationPlan')
+    const interviewReports = await interviewReportModel.find({user: req.user.id}).sort({createdAt: -1}).select('-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps -preparationPlan')
 
 
     res.status(200).json({
